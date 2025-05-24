@@ -1,0 +1,11 @@
+# dependencies
+**/node_modules/
+
+# build outputs
+**/build/
+
+# test coverage
+**/coverage/
+
+# environment files
+.env
