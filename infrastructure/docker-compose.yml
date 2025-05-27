@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ../backend
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/ball-sesh
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ../frontend
+    ports:
+      - "80:80"
+
+  admin:
+    build: ../admin
+    ports:
+      - "81:80"
+
+volumes:
+  mongo-data:
