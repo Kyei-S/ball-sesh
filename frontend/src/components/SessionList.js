@@ -1,7 +1,7 @@
 // frontend/src/components/SessionList.js
 const images = [
   '/3G-Sports-Pitch.jpg',
-  '/pitch and ball pic.png',
+  '/pitchandballpic.png',
 ];
 
 export default function SessionList({ sessions, onSelect }) {

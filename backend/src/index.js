@@ -43,23 +43,38 @@ app.get('/sessions', (req, res) => {
 });
 
 
-
-// --- Session CRUD ---
+// --- SESSION ROUTES ---
 
 // List all sessions
-app.get('/sessions', async (req, res) => {
+app.get('/api/sessions', async (req, res) => {
   const sessions = await Session.find();
   res.json(sessions);
 });
 
 // Create a new session (admin)
-app.post('/sessions', async (req, res) => {
+app.post('/api/sessions', async (req, res) => {
   const session = await Session.create(req.body);
   res.status(201).json(session);
 });
 
-// Update a session’s status (e.g. cancel)
-app.patch('/sessions/:id/status', async (req, res) => {
+// Update all session details
+app.put('/api/sessions/:id', async (req, res) => {
+  const session = await Session.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(session);
+});
+
+// Delete a session
+app.delete('/api/sessions/:id', async (req, res) => {
+  await Session.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
+});
+
+// Update only status (keep for quick status change)
+app.patch('/api/sessions/:id/status', async (req, res) => {
   const session = await Session.findByIdAndUpdate(
     req.params.id,
     { status: req.body.status },
@@ -68,16 +83,22 @@ app.patch('/sessions/:id/status', async (req, res) => {
   res.json(session);
 });
 
-// --- Booking CRUD ---
+// Get all bookings for a specific session (roster)
+app.get('/api/sessions/:id/bookings', async (req, res) => {
+  const bookings = await Booking.find({ session: req.params.id });
+  res.json(bookings);
+});
 
-// List all bookings (admin view)
-app.get('/bookings', async (req, res) => {
+// --- BOOKING ROUTES ---
+
+// List all bookings (admin)
+app.get('/api/bookings', async (req, res) => {
   const bookings = await Booking.find().populate('session');
   res.json(bookings);
 });
 
 // Create a new booking (public)
-app.post('/bookings', async (req, res) => {
+app.post('/api/bookings', async (req, res) => {
   const { session: sessionId, name, contact } = req.body;
   if (!sessionId || !name || !contact) {
     return res.status(400).json({ error: 'Missing required fields' });

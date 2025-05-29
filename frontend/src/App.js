@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import Header from './components/Header';
 import SessionList from './components/SessionList';
 import BookingModal from './components/BookingModal';
+import Footer from './components/Footer';
+import { useState, useEffect } from 'react';
 
 function App() {
   const [sessions, setSessions] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // Load sessions once
   useEffect(() => {
     fetch('/sessions')
       .then(r => r.json())
@@ -15,19 +16,28 @@ function App() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 font-sans">
-      <h1 className="text-3xl font-bold text-heatRed mb-6">
-        Choose Your Session
-      </h1>
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar/Header */}
+      <Header />
 
-      <SessionList sessions={sessions} onSelect={setSelected} />
+      {/* Main content area grows to fill */}
+      <main className="flex-grow container mx-auto px-6 py-8">
+        <h1 className="text-3xl font-bold text-flamePink mb-6">
+          Choose Your Session
+        </h1>
 
-      {selected && (
-        <BookingModal
-          session={selected}
-          onClose={() => setSelected(null)}
-        />
-      )}
+        <SessionList sessions={sessions} onSelect={setSelected} />
+
+        {selected && (
+          <BookingModal
+            session={selected}
+            onClose={() => setSelected(null)}
+          />
+        )}
+      </main>
+
+      {/* Slim footer at bottom */}
+      <Footer />
     </div>
   );
 }
