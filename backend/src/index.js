@@ -21,6 +21,29 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Seed data for demo
+const sessions = [
+  {
+    _id: '1',
+    venue: 'Northampton Goals NN3 6BL',
+    time: new Date().setHours(18, 0, 0), // today at 6pm
+    status: 'active',
+  },
+  {
+    _id: '2',
+    venue: 'Northampton Goals NN3 6BL',
+    time: new Date(Date.now() + 86400000).setHours(18, 0, 0), // tomorrow 6pm
+    status: 'cancelled',
+  },
+];
+
+// Sessions listing endpoint
+app.get('/sessions', (req, res) => {
+  res.json(sessions);
+});
+
+
+
 // --- Session CRUD ---
 
 // List all sessions
