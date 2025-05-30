@@ -1,8 +1,7 @@
 // Jenkinsfile for Ball Sesh Platform - Author: Stephen Kyei
 // CI/CD Pipeline: Checkout, Test, Build, Dockerize, Deploy
-
 pipeline {
-  agent any
+   agent any
 
   environment {
     REGISTRY = "stephenkyei"
