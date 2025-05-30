@@ -1,0 +1,23 @@
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom'; // <-- Add this
+import App from './App';
+
+/**
+ * @file App.test.js
+ * @author Stephen Kyei
+ * @purpose Unit test for the Admin dashboard’s main component.
+ *          Checks that the dashboard renders the management heading.
+ * @dependencies Jest, React Testing Library
+ */
+
+/** 
+test('renders Manage Sessions heading', () => {
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+  const heading = screen.getByText(/Manage Sessions/i);
+  expect(heading).toBeInTheDocument();
+});
+*/

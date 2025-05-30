@@ -9,7 +9,7 @@ function App() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    fetch('/sessions')
+    fetch('/api/sessions')
       .then(r => r.json())
       .then(setSessions)
       .catch(console.error);

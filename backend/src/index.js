@@ -108,6 +108,11 @@ app.post('/api/bookings', async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Backend API listening on http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Backend API listening on http://localhost:${port}`);
+  });
+}
+
+// 👇 Add this line at the very end:
+module.exports = app;
