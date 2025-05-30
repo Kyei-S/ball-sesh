@@ -18,24 +18,24 @@ pipeline {
         stage('Frontend Test') {
           steps {
             dir('frontend') {
-              sh 'npm ci'
-              sh 'npm test -- --watchAll=false'
+              bat 'npm ci'
+              bat 'npm test -- --watchAll=false'
             }
           }
         }
         stage('Backend Test') {
           steps {
             dir('backend') {
-              sh 'npm ci'
-              sh 'npm test -- --watchAll=false'
+              bat 'npm ci'
+              bat 'npm test -- --watchAll=false'
             }
           }
         }
         stage('Admin Test') {
           steps {
             dir('admin') {
-              sh 'npm ci'
-              sh 'npm test -- --watchAll=false'
+              bat 'npm ci'
+              bat 'npm test -- --watchAll=false'
             }
           }
         }
@@ -44,12 +44,12 @@ pipeline {
     stage('Docker Build & Push') {
       steps {
         script {
-          sh "docker build -t $REGISTRY/frontend:$IMAGE_TAG frontend/"
-          sh "docker build -t $REGISTRY/backend:$IMAGE_TAG backend/"
-          sh "docker build -t $REGISTRY/admin:$IMAGE_TAG admin/"
-          sh "docker push $REGISTRY/frontend:$IMAGE_TAG"
-          sh "docker push $REGISTRY/backend:$IMAGE_TAG"
-          sh "docker push $REGISTRY/admin:$IMAGE_TAG"
+          bat "docker build -t $REGISTRY/frontend:$IMAGE_TAG frontend/"
+          bat "docker build -t $REGISTRY/backend:$IMAGE_TAG backend/"
+          bat "docker build -t $REGISTRY/admin:$IMAGE_TAG admin/"
+          bat "docker push $REGISTRY/frontend:$IMAGE_TAG"
+          bat "docker push $REGISTRY/backend:$IMAGE_TAG"
+          bat "docker push $REGISTRY/admin:$IMAGE_TAG"
         }
       }
     }
