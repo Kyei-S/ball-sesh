@@ -1,95 +1,43 @@
+import Header from './components/Header';
+import SessionList from './components/SessionList';
+import BookingModal from './components/BookingModal';
+import Footer from './components/Footer';
 import { useState, useEffect } from 'react';
 
 function App() {
   const [sessions, setSessions] = useState([]);
-  const [form, setForm] = useState({ session: '', name: '', contact: '' });
-  const [result, setResult] = useState(null);
+  const [selected, setSelected] = useState(null);
 
-  // 1. Load available sessions on mount
   useEffect(() => {
     fetch('/sessions')
-      .then(res => res.ok ? res.json() : Promise.reject(res.status))
-      .then(data => setSessions(data))
-      .catch(err => console.error('Error fetching sessions:', err));
+      .then(r => r.json())
+      .then(setSessions)
+      .catch(console.error);
   }, []);
 
-  // 2. Submit booking
-  const submit = e => {
-    e.preventDefault();
-    setResult(null);
-    fetch('/bookings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-      .then(res => res.ok ? res.json() : res.json().then(err => Promise.reject(err)))
-      .then(data => setResult({ success: true, data }))
-      .catch(err => setResult({ success: false, error: err.error || err }));
-  };
-
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', fontFamily: 'sans-serif' }}>
-      <h1>Book a Session</h1>
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar/Header */}
+      <Header />
 
-      <form onSubmit={submit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label>
-            Session<br/>
-            <select
-              required
-              value={form.session}
-              onChange={e => setForm({ ...form, session: e.target.value })}
-            >
-              <option value="">-- pick one --</option>
-              {sessions.map(s => (
-                <option key={s._id} value={s._id}>
-                  {new Date(s.time).toLocaleString()} @ {s.venue} ({s.status})
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+      {/* Main content area grows to fill */}
+      <main className="flex-grow container mx-auto px-6 py-8">
+        <h1 className="text-3xl font-bold text-flamePink mb-6">
+          Choose Your Session
+        </h1>
 
-        <div style={{ marginBottom: '1rem' }}>
-          <label>
-            Name<br/>
-            <input
-              required
-              value={form.name}
-              onChange={e => setForm({ ...form, name: e.target.value })}
-            />
-          </label>
-        </div>
+        <SessionList sessions={sessions} onSelect={setSelected} />
 
-        <div style={{ marginBottom: '1rem' }}>
-          <label>
-            Contact<br/>
-            <input
-              required
-              value={form.contact}
-              onChange={e => setForm({ ...form, contact: e.target.value })}
-            />
-          </label>
-        </div>
+        {selected && (
+          <BookingModal
+            session={selected}
+            onClose={() => setSelected(null)}
+          />
+        )}
+      </main>
 
-        <button type="submit">Book Now</button>
-      </form>
-
-      {result && (
-        <div style={{ marginTop: '2rem', padding: '1rem', background: '#f0f0f0' }}>
-          {result.success ? (
-            <>
-              <h2>Booking Confirmed!</h2>
-              <pre>{JSON.stringify(result.data, null, 2)}</pre>
-            </>
-          ) : (
-            <>
-              <h2 style={{ color: 'red' }}>Error</h2>
-              <pre>{JSON.stringify(result.error, null, 2)}</pre>
-            </>
-          )}
-        </div>
-      )}
+      {/* Slim footer at bottom */}
+      <Footer />
     </div>
   );
 }
