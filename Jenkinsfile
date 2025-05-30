@@ -1,6 +1,7 @@
 // Jenkinsfile for Ball Sesh Platform - Author: Stephen Kyei
 // CI/CD Pipeline: Checkout, Test, Build, Dockerize, Deploy
 
+pipeline {
   agent any
 
   environment {
@@ -63,4 +64,4 @@
     success { echo 'Deployment successful!' }
     failure { echo "Build failed: ${env.BUILD_NUMBER}" }
   }
-
+}
