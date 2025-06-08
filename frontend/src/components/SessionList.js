@@ -5,29 +5,30 @@ export default function SessionList({ sessions, onSelect }) {
         <div
           key={s._id}
           onClick={() => onSelect(s)}
-          className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transform hover:-translate-y-1 hover:shadow-xl transition"
+          className="bg-surface rounded-xl overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-primary/20"
         >
-          {/* Pitch image */}
           <img
             src="/pitchandballpic.png"
             alt="Football pitch"
-            className="w-full h-40 object-cover"
+            className="w-full h-48 object-cover opacity-80 hover:opacity-100 transition-opacity"
           />
-          <div className="p-4">
-            <h2 className="text-xl font-semibold">{s.venue}</h2>
-            <p className="text-gray-500 text-sm">
+          <div className="p-6">
+            <h2 className="text-xl font-bold text-text-primary mb-2">{s.venue}</h2>
+            <p className="text-text-secondary text-sm mb-3">
               {new Date(s.time).toLocaleString()}
             </p>
-            <p className={`mt-2 inline-block px-2 py-1 text-xs font-medium rounded ${
-              s.status === 'active'
-                ? 'bg-heatYellow text-heatBlack'
-                : 'bg-gray-300 text-gray-600'
-            }`}>
-              {s.status}
-            </p>
-            <p className="mt-2 text-gray-700">
-              £{s.price?.toFixed(2) || "N/A"} • {s.venue}
-            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-secondary font-semibold">
+                £{s.price?.toFixed(2) || "N/A"}
+              </p>
+              <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                s.status === 'active'
+                  ? 'bg-accent/20 text-accent'
+                  : 'bg-gray-700/50 text-gray-400'
+              }`}>
+                {s.status}
+              </span>
+            </div>
           </div>
         </div>
       ))}

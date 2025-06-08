@@ -28,12 +28,14 @@ const sessions = [
     venue: 'Northampton Goals NN3 6BL',
     time: new Date().setHours(18, 0, 0), // today at 6pm
     status: 'active',
+    price: 8, // Add price
   },
   {
     _id: '2',
     venue: 'Northampton Goals NN3 6BL',
     time: new Date(Date.now() + 86400000).setHours(18, 0, 0), // tomorrow 6pm
     status: 'cancelled',
+    price: 8, // Add price
   },
 ];
 
@@ -105,6 +107,65 @@ app.post('/api/bookings', async (req, res) => {
   }
   const booking = await Booking.create({ session: sessionId, name, contact });
   res.status(201).json(booking);
+});
+
+// Stripe integration
+const Stripe = require('stripe');
+
+// Check if STRIPE_SECRET_KEY is loaded
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is not defined in the environment variables');
+}
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    const { sessionId, name, email } = req.body;
+
+    // Fetch session details from the database
+    const session = await Session.findById(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    // Debug logs
+    console.log('SESSION:', session);
+    console.log('SESSION PRICE:', session.price);
+
+    // Ensure session has a price
+    if (!session.price) {
+      return res.status(400).json({ error: 'Session price is missing' });
+    }
+
+    const stripeSession = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: [
+        {
+          price_data: {
+            currency: 'gbp',
+            product_data: {
+              name: `Booking for ${session.venue}`,
+              description: `Football session by ${name}`,
+            },
+            unit_amount: session.price * 100, // Convert pounds to pence
+          },
+          quantity: 1,
+        },
+      ],
+      customer_email: email,
+      metadata: {
+        sessionId,
+        player: name,
+      },
+      success_url: 'http://localhost:3000/success',
+      cancel_url: 'http://localhost:3000/cancel',
+    });
+
+    res.json({ url: stripeSession.url });
+  } catch (err) {
+    console.error('Error creating Stripe session:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Start the server
